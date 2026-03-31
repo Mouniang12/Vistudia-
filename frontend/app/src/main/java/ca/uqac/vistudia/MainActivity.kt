@@ -19,6 +19,8 @@ import ca.uqac.vistudia.ui.screens.LoginScreen
 import ca.uqac.vistudia.ui.screens.RecoveryScreen
 import ca.uqac.vistudia.ui.screens.SignUpScreen
 import ca.uqac.vistudia.ui.theme.VistudiaTheme
+import ca.uqac.vistudia.ui.screens.ForumSalonsScreen
+import ca.uqac.vistudia.ui.screens.ForumChatScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +72,14 @@ class MainActivity : ComponentActivity() {
                         ChecklistPartageScreen(
                             navController,
                             backStack.arguments?.getString("token") ?: ""
+                        )
+                    }
+                    composable("forum") { ForumSalonsScreen(navController) }
+                    composable("forum/chat/{salonId}/{nom}") { backStack ->
+                        ForumChatScreen(
+                            navController,
+                            backStack.arguments?.getString("salonId") ?: "",
+                            backStack.arguments?.getString("nom") ?: ""
                         )
                     }
                 }

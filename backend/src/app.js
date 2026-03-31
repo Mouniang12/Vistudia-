@@ -8,6 +8,7 @@ const userRouter = require("./Routers/userRouter");
 const checklistRouter = require("./Routers/checklistRouter");
 const guideImmigrationRouter = require("./Routers/guideImmigrationRouter");
 const documentRouter = require("./Routers/documentRouter");
+const forumRouter = require("./Routers/forumRouter");
 
 
 mongoose.connect(process.env.DB_CONNECTION_ID)
@@ -40,6 +41,7 @@ app.use("/api/users", userRouter);
 app.use("/api/checklist", checklistRouter);
 app.use("/api/immigration", guideImmigrationRouter);
 app.use("/api/documents", documentRouter);
+app.use("/api/forum", forumRouter);
 
 
 app.use(express.static(path.join(__dirname, '../public')));

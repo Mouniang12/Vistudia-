@@ -4,6 +4,8 @@ import ca.uqac.vistudia.Models.ChecklistPartage
 import ca.uqac.vistudia.Models.ChecklistResponse
 import ca.uqac.vistudia.Models.Destination
 import ca.uqac.vistudia.Models.DocumentItem
+import ca.uqac.vistudia.Models.ForumMessage
+import ca.uqac.vistudia.Models.ForumSalon
 import ca.uqac.vistudia.Models.GuideImmigrationDetail
 import ca.uqac.vistudia.Models.GuideImmigrationItem
 import ca.uqac.vistudia.Models.Historique
@@ -17,6 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+
 
 interface ApiService {
     // User
@@ -109,4 +112,17 @@ interface ApiService {
     fun getGuideImmigration(
         @Path("guideId") guideId: String
     ): Call<GuideImmigrationDetail>
+
+    // Forum
+    @GET("api/forum/salons")
+    fun getSalons(): Call<List<ForumSalon>>
+
+    @POST("api/forum/salons")
+    fun createSalon(@Body body: Map<String, String>): Call<ForumSalon>
+
+    @GET("api/forum/salons/{salonId}/messages")
+    fun getMessages(@Path("salonId") salonId: String): Call<List<ForumMessage>>
+
+    @POST("api/forum/salons/{salonId}/messages")
+    fun postMessage(@Path("salonId") salonId: String, @Body message: ForumMessage): Call<ForumMessage>
 }
