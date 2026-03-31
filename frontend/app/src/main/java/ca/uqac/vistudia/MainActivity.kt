@@ -21,6 +21,7 @@ import ca.uqac.vistudia.ui.screens.SignUpScreen
 import ca.uqac.vistudia.ui.theme.VistudiaTheme
 import ca.uqac.vistudia.ui.screens.ForumSalonsScreen
 import ca.uqac.vistudia.ui.screens.ForumChatScreen
+import ca.uqac.vistudia.ui.screens.MiseEnRelationScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
                             backStack.arguments?.getString("nom") ?: ""
                         )
                     }
+                    composable("miseEnRelation") { MiseEnRelationScreen(navController) }
                 }
             }
         }

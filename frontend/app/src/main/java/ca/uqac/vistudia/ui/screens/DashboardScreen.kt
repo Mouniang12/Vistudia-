@@ -42,27 +42,39 @@ fun DashboardScreen(navController: NavController) {
     var loading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        RetrofitClient.api.profile().enqueue(object : Callback<Map<String, Any>> {
-            override fun onResponse(
-                call: Call<Map<String, Any>>,
-                response: Response<Map<String, Any>>
-            ) {
-                loading = false
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    prenom = body?.get("prenom") as? String ?: ""
-                    nom = body?.get("nom") as? String ?: ""
-                } else if (response.code() == 401) {
-                    navController.navigate("login") {
-                        popUpTo("dashboard") { inclusive = true }
+        val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
+        val token = prefs.getString("auth_token", null)
+
+        if (token == null) {
+            // Mode invité
+            prenom = "Invité"
+            nom = ""
+            loading = false
+        } else {
+            RetrofitClient.api.profile().enqueue(object : Callback<Map<String, Any>> {
+                override fun onResponse(
+                    call: Call<Map<String, Any>>,
+                    response: Response<Map<String, Any>>
+                ) {
+                    loading = false
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        prenom = body?.get("prenom") as? String ?: ""
+                        nom = body?.get("nom") as? String ?: ""
+                    } else if (response.code() == 401) {
+                        navController.navigate("login") {
+                            popUpTo("dashboard") { inclusive = true }
+                        }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
-                loading = false
-            }
-        })
+                override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                    loading = false
+                    // En cas d'erreur réseau, on reste en mode invité visuellement
+                    prenom = "Mode Hors-ligne"
+                }
+            })
+        }
     }
 
     Column(
@@ -186,6 +198,15 @@ fun DashboardScreen(navController: NavController) {
                         titre = "Forum",
                         couleur = orange,
                         onClick = {navController.navigate("forum") }
+                    )
+                }
+
+                item {
+                    DashboardCard(
+                        icon = Icons.Default.Person,
+                        titre = "Mise en relation",
+                        couleur = orange,
+                        onClick = { navController.navigate("miseEnRelation") }
                     )
                 }
             }
