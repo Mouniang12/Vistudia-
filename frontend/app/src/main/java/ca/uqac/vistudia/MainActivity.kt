@@ -16,6 +16,7 @@ import ca.uqac.vistudia.ui.screens.DocumentsScreen
 import ca.uqac.vistudia.ui.screens.GuideImmigrationScreen
 import ca.uqac.vistudia.ui.screens.HomeScreen
 import ca.uqac.vistudia.ui.screens.LoginScreen
+import ca.uqac.vistudia.ui.screens.ProfileScreen
 import ca.uqac.vistudia.ui.screens.RecoveryScreen
 import ca.uqac.vistudia.ui.screens.SignUpScreen
 import ca.uqac.vistudia.ui.theme.VistudiaTheme
@@ -58,6 +59,7 @@ class MainActivity : ComponentActivity() {
                     composable("login") { LoginScreen(navController) }
                     composable("signup") { SignUpScreen(navController) }
                     composable("dashboard") { DashboardScreen(navController) }
+                    composable("profile") { ProfileScreen(navController) }
                     composable("checklist") { ChecklistScreen(navController) }
                     composable("recovery") { RecoveryScreen(navController) }
                     composable("documents") { DocumentsScreen(navController) }

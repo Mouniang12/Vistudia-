@@ -2,6 +2,7 @@ package ca.uqac.vistudia.ui.screens
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -129,7 +131,12 @@ fun DashboardScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .size(50.dp)
-                        .background(orange, RoundedCornerShape(25.dp)),
+                        .background(orange, RoundedCornerShape(25.dp))
+                        .pointerInput(Unit) {
+                            detectTapGestures {
+                                navController.navigate("profile")
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
