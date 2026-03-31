@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist Vistudia</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #ebebeb;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #1F3A6B;
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-logo {
+      font-size: 32px;
+    }
+
+    .header-info h1 {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .header-info p {
+      font-size: 13px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 16px 24px 0;
+    }
+
+    .badge-edition {
+      background: rgba(245, 130, 32, 0.15);
+      color: #F58220;
+      border: 1px solid rgba(245, 130, 32, 0.3);
+    }
+
+    .badge-lecture {
+      background: rgba(74, 144, 226, 0.15);
+      color: #4A90E2;
+      border: 1px solid rgba(74, 144, 226, 0.3);
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .info-card h2 {
+      font-size: 22px;
+      color: #1F3A6B;
+      font-weight: bold;
+    }
+
+    .info-card .sub {
+      font-size: 13px;
+      color: #7D7D7D;
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #ebebeb;
+      border-radius: 4px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #F58220;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: #7D7D7D;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #4A4A4A;
+      margin: 20px 0 10px;
+    }
+
+    .demarche-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .demarche-card.done {
+      opacity: 0.5;
+      transform: scale(0.98);
+    }
+
+    .checkbox-wrapper {
+      flex-shrink: 0;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: #F58220;
+      cursor: pointer;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:disabled {
+      cursor: not-allowed;
+    }
+
+    .demarche-info {
+      flex: 1;
+    }
+
+    .demarche-titre {
+      font-size: 15px;
+      font-weight: 600;
+      color: #4A4A4A;
+    }
+
+    .demarche-description {
+      font-size: 13px;
+      color: #7D7D7D;
+      margin-top: 2px;
+    }
+
+    .demarche-badge {
+      font-size: 11px;
+      background: rgba(74, 144, 226, 0.1);
+      color: #4A90E2;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    .doc-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Date picker dialog */
+    .date-dialog-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .date-dialog-overlay.visible {
+      display: flex;
+    }
+
+    .date-dialog {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+
+    .date-dialog h3 {
+      font-size: 18px;
+      color: #1F3A6B;
+      margin-bottom: 8px;
+    }
+
+    .date-dialog p {
+      font-size: 13px;
+      color: #7D7D7D;
+      margin-bottom: 16px;
+    }
+
+    .date-dialog input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .date-dialog input[type="date"]:focus {
+      border-color: #F58220;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: #F58220;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #ebebeb;
+      color: #4A4A4A;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F3A6B;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.visible {
+      opacity: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #7D7D7D;
+    }
+
+    .empty-state .emoji {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      color: #4A4A4A;
+      margin-bottom: 6px;
+    }
+
+    .historique-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .historique-icon {
+      width: 36px;
+      height: 36px;
+      background: #E8F5E9;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .historique-info .titre {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4A4A4A;
+    }
+
+    .historique-info .date {
+      font-size: 12px;
+      color: #7D7D7D;
+      margin-top: 2px;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .error-state .emoji { font-size: 56px; margin-bottom: 16px; }
+    .error-state h2 { color: #1F3A6B; margin-bottom: 8px; }
+    .error-state p { color: #7D7D7D; font-size: 14px; }
+
+    @media (max-width: 400px) {
+      .header { padding: 16px; }
+      .container { padding: 12px 12px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div style="text-align:center; padding: 60px 20px; color: #7D7D7D;">
+    <div style="font-size:32px; margin-bottom:12px;">⏳</div>
+    <p>Chargement...</p>
+  </div>
+</div>
+
+<div class="date-dialog-overlay" id="dateDialog">
+  <div class="date-dialog">
+    <h3>📄 Date d'expiration</h3>
+    <p>Entrez la date d'expiration de ce document</p>
+    <input type="date" id="dateInput" />
+    <div class="dialog-buttons">
+      <button class="btn btn-secondary" onclick="fermerDateDialog()">Annuler</button>
+      <button class="btn btn-primary" onclick="confirmerDate()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const token = window.location.pathname.split('/').pop();
+  let donneesChecklist = null;
+  let demarcheEnCours = null;
+  let callbackDate = null;
+
+  // Charger les données
+  async function charger() {
+    try {
+      const res = await fetch(`/api/checklist/partage-data/${token}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        afficherErreur(data.message || "Lien invalide ou expiré");
+        return;
+      }
+
+      donneesChecklist = data;
+      afficherChecklist(data);
+    } catch (err) {
+      afficherErreur("Erreur de connexion au serveur");
+    }
+  }
+
+  function afficherChecklist(data) {
+    const modeEdition = data.mode === "edition";
+    const total = data.demarches.length + data.demarchesEffectuees.length;
+    const faites = data.demarchesEffectuees.length;
+    const pourcentage = total > 0 ? Math.round((faites / total) * 100) : 0;
+
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div class="header">
+        <div class="header-logo">📋</div>
+        <div class="header-info">
+          <h1>${data.destination}</h1>
+          <p>Partagée par ${data.proprietaire}</p>
+        </div>
+      </div>
+
+      <div style="padding: 0 16px;">
+        <div class="badge ${modeEdition ? 'badge-edition' : 'badge-lecture'}">
+          ${modeEdition ? '✏️ Mode Édition' : '👁️ Mode Lecture'}
+        </div>
+      </div>
+
+      <div class="container">
+
+        <!-- Progression -->
+        <div class="info-card">
+          <h2>${data.destination}</h2>
+          <p class="sub">Checklist de ${data.proprietaire}</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${pourcentage}%"></div>
+          </div>
+          <p class="progress-text">${faites} / ${total} démarches effectuées (${pourcentage}%)</p>
+        </div>
+
+        <!-- Démarches à faire -->
+        ${data.demarches.length > 0 ? `
+          <p class="section-title">📋 Démarches à effectuer (${data.demarches.length})</p>
+          <div id="listeDemarches">
+            ${data.demarches.map(d => carteDemarche(d, modeEdition, false)).join('')}
+          </div>
+        ` : `
+          <div class="empty-state">
+            <div class="emoji">🎉</div>
+            <h3>Toutes les démarches sont effectuées !</h3>
+            <p>Félicitations à ${data.proprietaire}</p>
+          </div>
+        `}
+
+        <!-- Historique -->
+        ${data.demarchesEffectuees.length > 0 ? `
+          <p class="section-title">✅ Démarches effectuées (${faites})</p>
+          ${data.demarchesEffectuees.map(d => `
+            <div class="historique-card">
+              <div class="historique-icon">✅</div>
+              <div class="historique-info">
+                <div class="titre">${d.titreDemarche}</div>
+                <div class="date">${d.dateEffectuee ? new Date(d.dateEffectuee).toLocaleDateString('fr-FR') : ''}</div>
+              </div>
+            </div>
+          `).join('')}
+        ` : ''}
+
+      </div>
+    `;
+  }
+
+  function carteDemarche(demarche, modeEdition, faite) {
+    const checkbox = modeEdition
+      ? `<input type="checkbox" ${faite ? 'checked disabled' : ''}
+           onchange="cocherDemarche('${demarche.id}', '${demarche.type}', this)" />`
+      : `<input type="checkbox" ${faite ? 'checked' : ''} disabled />`;
+
+    return `
+      <div class="demarche-card ${faite ? 'done' : ''}" id="demarche-${demarche.id}">
+        <div class="checkbox-wrapper">${checkbox}</div>
+        <div class="demarche-info">
+          <div class="demarche-titre">${demarche.titre}</div>
+          <div class="demarche-description">${demarche.description}</div>
+          ${demarche.type === 'document' ? '<span class="demarche-badge">📄 Document</span>' : ''}
+        </div>
+        ${demarche.type === 'document' ? '<div class="doc-icon">📄</div>' : ''}
+      </div>
+    `;
+  }
+
+  function cocherDemarche(demarcheId, type, checkbox) {
+    if (type === 'document') {
+      demarcheEnCours = { id: demarcheId, checkbox };
+      // Définir la date minimum à aujourd'hui
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateInput').min = today;
+      document.getElementById('dateInput').value = '';
+      document.getElementById('dateDialog').classList.add('visible');
+    } else {
+      envoyerCocherDemarche(demarcheId, null, checkbox);
+    }
+  }
+
+  function fermerDateDialog() {
+    document.getElementById('dateDialog').classList.remove('visible');
+    if (demarcheEnCours) {
+      demarcheEnCours.checkbox.checked = false;
+    }
+    demarcheEnCours = null;
+  }
+
+  function confirmerDate() {
+    const date = document.getElementById('dateInput').value;
+    if (!date) {
+      afficherToast('⚠️ Veuillez sélectionner une date');
+      return;
+    }
+    document.getElementById('dateDialog').classList.remove('visible');
+    envoyerCocherDemarche(demarcheEnCours.id, date, demarcheEnCours.checkbox);
+    demarcheEnCours = null;
+  }
+
+  async function envoyerCocherDemarche(demarcheId, dateExpiration, checkbox) {
+    try {
+      const body = dateExpiration ? { dateExpiration } : {};
+      const res = await fetch(`/api/checklist/partage/${token}/${demarcheId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        // Animer la carte
+        const carte = document.getElementById(`demarche-${demarcheId}`);
+        if (carte) {
+          carte.classList.add('done');
+          setTimeout(() => {
+            carte.style.transition = 'all 0.4s ease';
+            carte.style.maxHeight = '0';
+            carte.style.padding = '0';
+            carte.style.margin = '0';
+            carte.style.opacity = '0';
+            setTimeout(() => {
+              carte.remove();
+              // Recharger pour mettre à jour la progression
+              charger();
+            }, 400);
+          }, 500);
+        }
+        afficherToast('✅ Démarche effectuée !');
+      } else {
+        checkbox.checked = false;
+        afficherToast('❌ Erreur lors de la mise à jour');
+      }
+    } catch (err) {
+      checkbox.checked = false;
+      afficherToast('❌ Erreur de connexion');
+    }
+  }
+
+  function afficherErreur(message) {
+    document.getElementById('app').innerHTML = `
+      <div class="header">
+        <div class="header-logo">📋</div>
+        <div class="header-info">
+          <h1>Checklist Vistudia</h1>
+        </div>
+      </div>
+      <div class="container">
+        <div class="error-state">
+          <div class="emoji">❌</div>
+          <h2>Lien invalide</h2>
+          <p>${message}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function afficherToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('visible');
+    setTimeout(() => toast.classList.remove('visible'), 3000);
+  }
+
+  charger();
+</script>
+</body>
+</html>
