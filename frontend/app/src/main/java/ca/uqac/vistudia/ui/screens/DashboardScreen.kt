@@ -166,7 +166,9 @@ fun DashboardScreen(navController: NavController) {
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                                    .weight(2f),
+
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -218,7 +220,7 @@ fun DashboardScreen(navController: NavController) {
                 }
             }
 
-           // Spacer(modifier = Modifier.weight(0.000002f))
+          // Spacer(modifier = Modifier.weight(0.000002f))
 
             Button(
                 onClick = { logout(context, navController) },

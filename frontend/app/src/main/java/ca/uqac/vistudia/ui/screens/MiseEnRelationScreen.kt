@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.navigation.NavController
 import ca.uqac.vistudia.ui.theme.*
 
@@ -29,7 +31,11 @@ fun MiseEnRelationScreen(navController: NavController) {
                 title = { Text("Mise en relation", color = blanc) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour", tint = blanc)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Retour",
+                            tint = blanc
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = blue_foncee)
@@ -37,53 +43,63 @@ fun MiseEnRelationScreen(navController: NavController) {
         },
         containerColor = fond_gris
     ) { padding ->
-        Column(
+
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                "Retrouvez notre communauté sur les réseaux sociaux :",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = gris_fonce,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
 
-            SocialLinkCard(
-                title = "Discord",
-                description = "Rejoignez notre serveur pour discuter avec d'autres étudiants et obtenir de l'aide.",
-                buttonText = "Ouvrir Discord",
-                color = Color(0xFF5865F2),
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://discord.gg/your-link".toUri())
-                    context.startActivity(intent)
-                }
-            )
+            item {
+                Text(
+                    "Retrouvez notre communauté sur les réseaux sociaux :",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = gris_fonce,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
 
-            SocialLinkCard(
-                title = "Facebook",
-                description = "Suivez notre page pour ne rien manquer des événements et actualités.",
-                buttonText = "Voir la page Facebook",
-                color = Color(0xFF1877F2),
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://www.facebook.com/your-page".toUri())
-                    context.startActivity(intent)
-                }
-            )
+            item {
+                SocialLinkCard(
+                    title = "Discord",
+                    description = "Rejoignez notre serveur pour discuter avec d'autres étudiants et obtenir de l'aide.",
+                    buttonText = "Ouvrir Discord",
+                    color = Color(0xFF5865F2),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://discord.gg/your-link".toUri())
+                        context.startActivity(intent)
+                    }
+                )
+            }
 
-            SocialLinkCard(
-                title = "Instagram",
-                description = "Découvrez la vie étudiante à travers nos photos et stories.",
-                buttonText = "Nous suivre sur Instagram",
-                color = Color(0xFFE4405F),
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://www.instagram.com/your-account".toUri())
-                    context.startActivity(intent)
-                }
-            )
+            item {
+                SocialLinkCard(
+                    title = "Facebook",
+                    description = "Suivez notre page pour ne rien manquer des événements et actualités.",
+                    buttonText = "Voir la page Facebook",
+                    color = Color(0xFF1877F2),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://www.facebook.com/your-page".toUri())
+                        context.startActivity(intent)
+                    }
+                )
+            }
+
+            item {
+                SocialLinkCard(
+                    title = "Instagram",
+                    description = "Découvrez la vie étudiante à travers nos photos et stories.",
+                    buttonText = "Nous suivre sur Instagram",
+                    color = Color(0xFFE4405F),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://www.instagram.com/your-account".toUri())
+                        context.startActivity(intent)
+                    }
+                )
+            }
         }
     }
 }
