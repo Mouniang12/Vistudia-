@@ -1,5 +1,6 @@
 package ca.uqac.vistudia.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +34,9 @@ fun ForumChatScreen(navController: NavController, salonId: String, salonNom: Str
     var text by remember { mutableStateOf("") }
     var monNom by remember { mutableStateOf("Invité") }
     val listState = rememberLazyListState()
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
+    val token = prefs.getString("auth_token", null)
 
     // 1. Récupérer le nom du profil
     LaunchedEffect(Unit) {
@@ -93,6 +98,7 @@ fun ForumChatScreen(navController: NavController, salonId: String, salonNom: Str
                         value = text,
                         onValueChange = { text = it },
                         modifier = Modifier.weight(1f),
+                        enabled = !token.isNullOrEmpty(),
                         placeholder = { Text("Écrire un message...") },
                         shape = RoundedCornerShape(24.dp)
                     )

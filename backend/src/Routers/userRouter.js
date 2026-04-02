@@ -15,5 +15,7 @@ router.get("/reset-password/:token", (req, res) => {
 });
 
 router.post("/reset-password/:token", userController.resetPassword);
+router.put("/profile", userController.updateProfile);
+router.put("/change-password", userController.changePassword);
 
 module.exports = router;

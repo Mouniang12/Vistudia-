@@ -8,7 +8,15 @@ const UserSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
   resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date }
+  resetPasswordExpires: { type: Date },
+
+  telephone: { type: String, default: "" },
+  nationalite: { type: String, default: "" },
+  dateNaissance: { type: Date, default: null },
+  bio: { type: String, default: "" },
+  paysOrigine: { type: String, default: "" },
+  paysDestination: { type: String, default: "" },
+  dateCreation: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -12,6 +12,7 @@ import ca.uqac.vistudia.Models.Historique
 import ca.uqac.vistudia.Models.LoginRequest
 import ca.uqac.vistudia.Models.PartageResponse
 import ca.uqac.vistudia.Models.User
+import ca.uqac.vistudia.Models.UserProfile
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -40,6 +41,15 @@ interface ApiService {
 
     @POST("api/users/forgot-password")
     fun forgotPassword(@Body body: Map<String, String>): Call<Map<String, Any>>
+
+    @GET("api/users/profile")
+    fun getProfile(): Call<UserProfile>
+
+    @PUT("api/users/profile")
+    fun updateProfile(@Body body: Map<String, String>): Call<Map<String, Any>>
+
+    @PUT("api/users/change-password")
+    fun changePassword(@Body body: Map<String, String>): Call<Map<String, Any>>
 
     // Checklist
     @GET("api/checklist/destinations")

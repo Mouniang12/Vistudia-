@@ -4,6 +4,60 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendVerificationEmail, sendResetPasswordEmail } = require("../Services/emailService");
 
+exports.updateProfile = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: "Non authentifié" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const {
+      prenom, nom, telephone,
+      nationalite, dateNaissance,
+      bio, paysOrigine, paysDestination
+    } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      decoded.id,
+      {
+        prenom, nom, telephone,
+        nationalite, dateNaissance,
+        bio, paysOrigine, paysDestination
+      },
+      { new: true }
+    ).select("-password");
+
+    res.json({ message: "Profil mis à jour !", user });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: "Non authentifié" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { ancienPassword, nouveauPassword } = req.body;
+
+    const user = await User.findById(decoded.id);
+    const valide = await bcrypt.compare(ancienPassword, user.password);
+
+    if (!valide) {
+      return res.status(400).json({ message: "Ancien mot de passe incorrect" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(nouveauPassword, salt);
+    await user.save();
+
+    res.json({ message: "Mot de passe modifié !" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
 exports.registerUser = async (req, res) => {
   try {
     const { prenom, nom, email, password } = req.body;

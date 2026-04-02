@@ -45,7 +45,6 @@ fun LoginScreen(navController: NavController) {
     var loading by remember { mutableStateOf(false) }
     var errorMsg by remember { mutableStateOf("") }
 
-    // Pré-remplir email sauvegardé
     LaunchedEffect(Unit) {
         val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
         val saved = prefs.getString("saved_email", "") ?: ""
@@ -62,15 +61,24 @@ fun LoginScreen(navController: NavController) {
             .verticalScroll(rememberScrollState())
     ) {
 
-        // Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                .background(blue_foncee),
-            contentAlignment = Alignment.Center
+                .background(blue_foncee)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.align(Alignment.TopStart)
+            ) {
+                Text("←", color = blanc, fontSize = 24.sp)
+            }
+
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     "Connexion",
                     color = blanc,
@@ -84,6 +92,7 @@ fun LoginScreen(navController: NavController) {
                 )
             }
         }
+
 
         // Card formulaire
         Card(

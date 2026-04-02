@@ -16,8 +16,7 @@ class MyApplication : Application() {
         NotificationHelper.creerCanal(this)
         planifierVerificationDocuments(this)
 
-        // TEST IMMÉDIAT — à supprimer en production
-        testerNotificationImmédiate(this)
+       // testerNotificationImmédiate(this)
     }
 }
 

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+// import androidx.compose.foundation.lazy.items
 import androidx.navigation.NavController
 import ca.uqac.vistudia.ui.theme.*
 

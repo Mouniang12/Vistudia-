@@ -1,5 +1,6 @@
 package ca.uqac.vistudia.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,9 +31,12 @@ import retrofit2.Response
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForumSalonsScreen(navController: NavController) {
+    val context = LocalContext.current
     var salons by remember { mutableStateOf(listOf<ForumSalon>()) }
     var isLoading by remember { mutableStateOf(true) }
     var showDialog by remember { mutableStateOf(false) }
+    val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
+    val token = prefs.getString("auth_token", null)
 
     // Charger les salons au démarrage
     LaunchedEffect(Unit) {
@@ -53,13 +58,16 @@ fun ForumSalonsScreen(navController: NavController) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = blue_foncee)
             )
         },
+
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showDialog = true },
-                containerColor = orange,
-                contentColor = blanc
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Créer un salon")
+            if (!token.isNullOrEmpty()){
+                FloatingActionButton(
+                    onClick = { showDialog = true },
+                    containerColor = orange,
+                    contentColor = blanc
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Créer un salon")
+                }
             }
         },
         containerColor = fond_gris

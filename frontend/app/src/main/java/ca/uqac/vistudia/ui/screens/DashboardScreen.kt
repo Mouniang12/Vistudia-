@@ -42,41 +42,44 @@ fun DashboardScreen(navController: NavController) {
     var prenom by remember { mutableStateOf("") }
     var nom by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(true) }
+    val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
+    val token = prefs.getString("auth_token", null)
 
     LaunchedEffect(Unit) {
-        val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
-        val token = prefs.getString("auth_token", null)
 
-        if (token == null) {
-            // Mode invité
+
+        if (token.isNullOrEmpty()) {
             prenom = "Invité"
             nom = ""
             loading = false
-        } else {
-            RetrofitClient.api.profile().enqueue(object : Callback<Map<String, Any>> {
-                override fun onResponse(
-                    call: Call<Map<String, Any>>,
-                    response: Response<Map<String, Any>>
-                ) {
-                    loading = false
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        prenom = body?.get("prenom") as? String ?: ""
-                        nom = body?.get("nom") as? String ?: ""
-                    } else if (response.code() == 401) {
-                        navController.navigate("login") {
-                            popUpTo("dashboard") { inclusive = true }
-                        }
+            return@LaunchedEffect
+        }
+
+        RetrofitClient.api.profile().enqueue(object : Callback<Map<String, Any>> {
+
+            override fun onResponse(
+                call: Call<Map<String, Any>>,
+                response: Response<Map<String, Any>>
+            ) {
+                loading = false
+
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    prenom = body?.get("prenom") as? String ?: ""
+                    nom = body?.get("nom") as? String ?: ""
+                } else if (response.code() == 401) {
+                    navController.navigate("login") {
+                        popUpTo("dashboard") { inclusive = true }
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
-                    loading = false
-                    // En cas d'erreur réseau, on reste en mode invité visuellement
-                    prenom = "Mode Hors-ligne"
-                }
-            })
-        }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                loading = false
+                prenom = "Invité"
+                nom = ""
+            }
+        })
     }
 
     Column(
@@ -134,7 +137,9 @@ fun DashboardScreen(navController: NavController) {
                         .background(orange, RoundedCornerShape(25.dp))
                         .pointerInput(Unit) {
                             detectTapGestures {
-                                navController.navigate("profile")
+                                if (!token.isNullOrEmpty()) {
+                                    navController.navigate("profile")
+                                }
                             }
                         },
                     contentAlignment = Alignment.Center
@@ -167,29 +172,32 @@ fun DashboardScreen(navController: NavController) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxWidth()
-                                    .weight(2f),
+                                   .weight(1f),
 
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
-                item {
-                    DashboardCard(
-                        icon = Icons.Default.CheckCircle,
-                        titre = "Checklist Personnalisée",
-                        couleur = orange,
-                        onClick = { navController.navigate("checklist") }
-                    )
+                if (!token.isNullOrEmpty()) {
+                    item {
+                        DashboardCard(
+                            icon = Icons.Default.CheckCircle,
+                            titre = "Checklist Personnalisée",
+                            couleur = orange,
+                            onClick = { navController.navigate("checklist") }
+                        )
+                    }
                 }
 
-                item {
-                    DashboardCard(
-                        icon = Icons.Default.Description,
-                        titre = "Documents",
-                        couleur = orange,
-                        onClick = {navController.navigate("documents") }
-                    )
+                if (!token.isNullOrEmpty()) {
+                    item {
+                        DashboardCard(
+                            icon = Icons.Default.Description,
+                            titre = "Documents",
+                            couleur = orange,
+                            onClick = {navController.navigate("documents") }
+                        )
+                    }
                 }
 
                 item {
@@ -222,28 +230,31 @@ fun DashboardScreen(navController: NavController) {
 
           // Spacer(modifier = Modifier.weight(0.000002f))
 
-            Button(
-                onClick = { logout(context, navController) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(40.dp)
-                    .height(52.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(
-                    Icons.Default.ExitToApp,
-                    contentDescription = null,
-                    tint = blanc,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Se déconnecter",
-                    color = blanc,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            if (!token.isNullOrEmpty()) {
+                Button(
+                    onClick = { logout(context, navController) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(40.dp)
+                        .height(52.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53935)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+
+                    Icon(
+                        Icons.Default.ExitToApp,
+                        contentDescription = null,
+                        tint = blanc,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Se déconnecter",
+                        color = blanc,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -302,7 +313,11 @@ fun DashboardCard(
             )
         }
     }
+
+
 }
+
+
 
 private fun logout(context: Context, navController: NavController) {
     val prefs = context.getSharedPreferences("vistudia_prefs", Context.MODE_PRIVATE)
