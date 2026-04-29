@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import ca.uqac.vistudia.ui.screens.CheckEmailScreen
 import ca.uqac.vistudia.ui.screens.ChecklistPartageScreen
 import ca.uqac.vistudia.ui.screens.ChecklistScreen
+import ca.uqac.vistudia.ui.screens.ConditionsScreen
 import ca.uqac.vistudia.ui.screens.DashboardScreen
 import ca.uqac.vistudia.ui.screens.DocumentsScreen
 import ca.uqac.vistudia.ui.screens.GuideImmigrationScreen
@@ -86,6 +87,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("miseEnRelation") { MiseEnRelationScreen(navController) }
+                    composable("conditions") { ConditionsScreen(navController)}
                 }
             }
         }

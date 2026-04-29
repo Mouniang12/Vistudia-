@@ -103,6 +103,11 @@ fun DashboardScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                if (token.isNullOrEmpty()) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Text("←", color = blanc, fontSize = 22.sp)
+                    }
+                }
                 Column {
                     Text(
                         "Bonjour 👋",

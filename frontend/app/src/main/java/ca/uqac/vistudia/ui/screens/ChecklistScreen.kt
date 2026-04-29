@@ -48,14 +48,12 @@ fun ChecklistScreen(navController: NavController) {
     var partageResponse by remember { mutableStateOf<PartageResponse?>(null) }
     var expanded by remember { mutableStateOf(false) }
 
-    // Charger mes destinations et toutes les destinations
     LaunchedEffect(Unit) {
         chargerMesDestinations { mesDestinations = it }
         chargerToutesDestinations { toutesDestinations = it }
         chargerHistorique { historique = it }
     }
 
-    // Charger démarches quand destination change
     LaunchedEffect(selectedDestination) {
         selectedDestination?.let { dest ->
             loadingDemarches = true
@@ -138,9 +136,13 @@ fun ChecklistScreen(navController: NavController) {
                         ) {
                             if (response.isSuccessful) {
                                 chargerMesDestinations { mesDestinations = it }
+
+                                // Si c'est la destination actuellement sélectionnée
+                                // → vider la checklist et désélectionner
                                 if (selectedDestination?._id == dest._id) {
                                     selectedDestination = null
                                     demarches = emptyList()
+                                    historique = emptyList()
                                 }
                             }
                         }

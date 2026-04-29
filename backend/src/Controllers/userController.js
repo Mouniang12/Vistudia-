@@ -60,7 +60,7 @@ exports.changePassword = async (req, res) => {
 
 exports.registerUser = async (req, res) => {
   try {
-    const { prenom, nom, email, password } = req.body;
+    const { prenom, nom, email, password, paysOrigine } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -79,7 +79,8 @@ exports.registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       isVerified: false,
-      verificationToken
+      verificationToken,
+      paysOrigine: paysOrigine || ""
     });
 
     await user.save();

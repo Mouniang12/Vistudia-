@@ -37,16 +37,18 @@ exports.ajouterDestination = async (req, res) => {
   }
 };
 
-// Supprimer une destination de l'user
 exports.supprimerDestination = async (req, res) => {
   try {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { destinationId } = req.params;
+
     await UserDestination.deleteOne({ userId, destinationId });
 
-    res.json({ message: "Destination supprimée" });
+    await Checklist.deleteOne({ userId, destinationId });
+
+    res.json({ message: "Destination et checklist supprimées" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });
   }

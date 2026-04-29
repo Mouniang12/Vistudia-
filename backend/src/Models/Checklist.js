@@ -14,6 +14,7 @@ const ChecklistSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
+  
   destinationId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Destination",

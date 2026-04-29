@@ -4,7 +4,8 @@ data class User(
     val prenom: String,
     val nom: String,
     val email: String,
-    val password: String
+    val password: String,
+    val paysOrigine: String = ""
 )
 
 data class UserProfile(
