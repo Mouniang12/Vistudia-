@@ -32,12 +32,21 @@ exports.sendVerificationEmail = async (email, token) => {
     console.log("✅ Email envoyé à :", email);
   } catch (error) {
     console.error("❌ Erreur envoi email :", error.message);
+    console.log("\n=======================================================");
+    console.log(`📧 Simulation d'envoi d'email à : ${email}`);
+    console.log(`🔗 LIEN DE VÉRIFICATION : ${url}`);
+    console.log("=======================================================\n");
   }
 };
 
 
 exports.sendResetPasswordEmail = async (email, token) => {
   const url = `http://localhost:3000/api/users/reset-password/${token}`;
+
+  console.log("\n=======================================================");
+  console.log(`🔑 Simulation d'email de RESET pour : ${email}`);
+  console.log(`🔗 LIEN DE RESET : ${url}`);
+  console.log("=======================================================\n");
 
   try {
     await transporter.sendMail({
@@ -65,5 +74,9 @@ exports.sendResetPasswordEmail = async (email, token) => {
     console.log("✅ Email reset envoyé à :", email);
   } catch (error) {
     console.error("❌ Erreur envoi email reset :", error.message);
+    console.log("\n=======================================================");
+    console.log(`📧 Simulation d'envoi d'email à : ${email}`);
+    console.log(`🔗 LIEN DE VÉRIFICATION : ${url}`);
+    console.log("=======================================================\n");
   }
 };
